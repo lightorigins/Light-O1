@@ -57,23 +57,18 @@ understood before it moved. Actions come out as a `(frames, 138)` unified human 
 representation at 20 FPS, which renders a character directly or drives a behavior foundation model
 on a robot.
 
-The tech report compares Light-O1 with two public text-to-action models, HY-Motion-1.0 and Kimodo.
-Human rating is the primary measure: annotators score each generated action from 1 to 5 across
-eight action categories.
+The tech blog compares Light-O1-Preview with two public text-to-action models, HY-Motion-1.0 and
+Kimodo. On HY-Motion-Bench, a VLM judge decomposes each prompt into a checklist and scores the
+generated action question by question.
 
-<div align="center">
-  <img src="docs/assets/human-label-radar.svg" width="100%" alt="Human ratings by action category on a 1-5 scale, for semantic following, expressiveness and acceptability" />
-</div>
-
-HY-Motion-Bench adds an automatic check: a VLM judge decomposes each prompt into a checklist and
-scores the generated action question by question.
-
-| HY-Motion-Bench, SSAE | Light-O1 | HY-Motion-1.0 | Kimodo |
-| :--- | ---: | ---: | ---: |
-| Overall | **78.0** | 74.7 | 61.4 |
+| HY-Motion-Bench, SSAE | Overall |
+| :--- | ---: |
+| Light-O1-Preview | **78.0** |
+| HY-Motion-1.0 | 74.7 |
+| Kimodo | 61.4 |
 
 Protocols, baselines and caveats are in the
-[tech report](https://www.lightorigins.com/en/blog/light-o1).
+[tech blog](https://www.lightorigins.com/en/blog/light-o1).
 
 ## 2. Model Downloads
 
@@ -196,11 +191,12 @@ loading is asynchronous, so generation becomes available only once that API repo
 
 ### 4.6 Sonic example: Unitree G1 simulation
 
-Our [paper](https://www.lightorigins.com/en/blog/light-o1) demonstrates Light-O1 on both our LightBot
-robot and the Unitree G1. Light-O1 outputs a unified action representation, which is connected to each
-robot's BFM for execution: our own BFM for LightBot, and GEAR-SONIC as the low-level motion controller
-for the Unitree G1. For the community, we provide a [Sonic example](examples/sonic/README.md) that
-adapts this unified representation to GEAR-SONIC for closed-loop G1 simulation in MuJoCo.
+Our [tech blog](https://www.lightorigins.com/en/blog/light-o1) demonstrates Light-O1-Preview on both
+our LightBot robot and the Unitree G1. Light-O1-Preview outputs a unified action representation,
+which is connected to each robot's BFM for execution: our own BFM for LightBot, and GEAR-SONIC as
+the low-level motion controller for the Unitree G1. For the community, we provide a
+[Sonic example](examples/sonic/README.md) that adapts this unified representation to GEAR-SONIC for
+closed-loop G1 simulation in MuJoCo.
 
 The example produces a simulation video and rollout metrics. It requires a separate GEAR-SONIC
 low-latency policy checkpoint and runs in simulation only. See the [setup guide](docs/sonic.md) to run it
