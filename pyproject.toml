@@ -1,0 +1,81 @@
+[project]
+name = "light-deploy"
+version = "0.1.0"
+description = "Compact humanoid action inference and WebUI"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "fastapi>=0.116,<1",
+    "httpx>=0.28,<1",
+    "numpy>=2,<3",
+    "pillow>=11,<13",
+    "uvicorn[standard]>=0.35,<1",
+]
+
+[project.scripts]
+light-deploy = "light_deploy.generate:main"
+light-deploy-api = "light_deploy.api:main"
+light-deploy-server = "server.__main__:main"
+
+[project.optional-dependencies]
+inference = [
+    "safetensors>=0.5,<1; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "torch==2.11.0+cu130; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "transformers[torch]==5.9.0; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "vllm==0.26.0; sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+sonic = [
+    "mujoco==3.11.0",
+    "onnxruntime==1.28.0",
+]
+
+[dependency-groups]
+dev = [
+    "numpy>=2,<3",
+    "pillow>=11,<13",
+    "pytest>=7,<9",
+    "pytest-xdist>=3.8,<4",
+    "ruff==0.14.10",
+]
+
+[build-system]
+requires = ["uv_build>=0.9.11,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = ["light_deploy", "server", "examples"]
+module-root = "."
+source-include = [
+    "THIRD_PARTY_NOTICES.md",
+    "third_party/licenses/*",
+    "webui/index.html",
+    "webui/package*.json",
+    "webui/vite.config.js",
+    "webui/src/**",
+    "webui/public/models/mannequin/**",
+    "webui/tests/**",
+    "tests/**/*.py",
+]
+
+[tool.pytest.ini_options]
+addopts = "-n 1"
+testpaths = ["tests"]
+markers = ["gpu_e2e: requires an explicit GPU runner and production model artifacts"]
+
+[tool.ruff]
+line-length = 119
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.uv]
+required-version = ">=0.9.8"
+
+[tool.uv.sources]
+torch = { url = "https://download.pytorch.org/whl/cu130/torch-2.11.0%2Bcu130-cp311-cp311-manylinux_2_28_x86_64.whl" }
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f5f7" />
+    <meta name="description" content="Light Deploy compact humanoid action playground." />
+    <title>Light Deploy · Action Workspace</title>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand">
+        <svg class="brand-symbol" viewBox="0 0 101 148" aria-hidden="true">
+          <path d="M88.872261,58.680134C85.691345,54.70327,81.984138,51.224487,77.859009,48.368305L31.948503,17.059263L97.408882,17.059263L97.408882,0L3.5988505,0L3.5988505,15.58837L36.777931,39.581852C37.652493,40.212234,37.420307,41.566391,36.390957,41.885471C15.370575,48.430561,0,69.233215,0,93.87265C0,123.76527,22.606972,148.00002,50.5,148.00002C78.393028,148.00002,101,123.76528,101,93.872658C101,80.432259,96.433716,68.143677,88.872261,58.680134ZM50.5,130.93297C31.399004,130.93297,15.920076,114.34066,15.920076,93.872658C15.920076,73.404648,31.399004,56.812344,50.5,56.812344C69.60099,56.812344,85.079926,73.404655,85.079926,93.872658C85.079926,114.34066,69.60099,130.93297,50.5,130.93297Z" />
+        </svg>
+        <strong>LIGHT ORIGINS</strong>
+      </div>
+      <div class="header-context">
+        <select data-language aria-label="Language"><option value="en">English</option><option value="zh">中文</option></select>
+        <span>Action inference workspace</span>
+        <span class="system-state" data-system-state="offline">
+          <i aria-hidden="true"></i>
+          <span data-system-state-label>Server offline</span>
+        </span>
+      </div>
+    </header>
+
+    <main class="playground">
+      <aside class="control-pane" aria-label="Action controls and session activity">
+        <section class="control-workspace" data-control-workspace>
+          <div class="pane-heading">
+            <div><span>WORKSPACE</span><h1>Control</h1></div>
+            <span class="mode-badge">Inference only</span>
+          </div>
+
+          <section class="status-panel" aria-label="Service status">
+            <div data-control-indicator data-ready="false">
+              <span><i></i><b>Control</b></span><strong data-control-status>Offline</strong>
+            </div>
+            <div data-inference-indicator data-ready="false">
+              <span><i></i><b>Inference</b></span><strong data-inference-status>Stopped</strong>
+            </div>
+            <div data-sonic-indicator data-ready="true">
+              <span><i></i><b>Sonic</b></span><strong data-sonic-status>Available</strong>
+            </div>
+          </section>
+
+          <div class="control-scroll">
+            <section class="form-section" aria-labelledby="service-label">
+              <div class="section-label"><span id="service-label">Model service</span><small>01</small></div>
+              <label class="field" for="model-path">
+                <span>Checkpoint path</span>
+                <input id="model-path" data-model-path spellcheck="false" />
+              </label>
+              <div class="loaded-context" data-loaded-context hidden>
+                <div><span>Loaded model</span><strong data-loaded-model>—</strong></div>
+                <div><span>Action Representation</span><strong data-action-representation>—</strong></div>
+              </div>
+              <div class="parameter-grid service-parameters">
+                <label class="field" for="device"><span>Device</span><input id="device" data-device value="cuda:0" /></label>
+                <label class="field" for="context"><span>Context</span><input id="context" data-max-model-len type="number" min="1" value="1024" /></label>
+                <label class="field"><span>KV cache · GiB</span><input data-kv-cache-gb type="number" min="0.25" step="0.25" value="2" /></label>
+              </div>
+              <label class="check-control">
+                <span><strong>Deterministic</strong><small>Eager reproducibility mode</small></span>
+                <input data-deterministic type="checkbox" />
+              </label>
+              <div class="service-actions">
+                <button class="primary-button" type="button" data-service-start>Start service</button>
+                <button class="quiet-button" type="button" data-service-stop>Stop</button>
+              </div>
+            </section>
+
+            <details class="settings-group" open>
+              <summary><span>Generation controls</span><small>02</small></summary>
+              <div class="settings-body parameter-grid advanced-grid">
+                <label class="field field-wide"><span>Reasoning token budget</span><input name="reasoning_token_budget" type="number" value="384" min="0" /></label>
+                <label class="field"><span>Reasoning temperature</span><input name="reasoning_temperature" type="number" value="0.6" min="0" step="0.05" /></label>
+                <label class="field"><span>Reasoning top-p</span><input name="reasoning_top_p" type="number" value="0.95" min="0.01" max="1" step="0.01" /></label>
+                <label class="field"><span>Action min · sec</span><input name="action_min_seconds" type="number" value="2.0" min="2" max="20" step="0.5" /></label>
+                <label class="field"><span>Action max · sec</span><input name="action_max_seconds" type="number" value="20.0" min="2" max="20" step="0.5" /></label>
+                <label class="field"><span>Action temperature</span><input name="action_temperature" type="number" value="0.6" min="0" step="0.05" /></label>
+                <label class="field"><span>Action top-p</span><input name="action_top_p" type="number" value="0.95" min="0.01" max="1" step="0.01" /></label>
+                <label class="field"><span>Seed</span><input name="seed" type="number" value="0" /></label>
+                <label class="field"><span>Candidates</span><select data-generation-count><option value="1">1</option><option value="2">2</option></select></label>
+              </div>
+            </details>
+
+            <details class="settings-group">
+              <summary><span>Sonic MuJoCo controls</span><small>03</small></summary>
+              <div class="settings-body parameter-grid">
+                <label class="field"><span>Replan frames</span><input data-sonic-replan type="number" value="8" min="1" /></label>
+                <label class="field"><span>Lookahead</span><input data-sonic-lookahead type="number" value="12" min="1" /></label>
+              </div>
+            </details>
+          </div>
+        </section>
+
+        <section class="activity-panel" data-activity-panel aria-labelledby="activity-heading">
+          <div class="panel-heading compact-heading">
+            <div><span>ACTIVITY</span><h2 id="activity-heading">Session Log</h2></div>
+            <button type="button" data-clear-log>Clear</button>
+          </div>
+          <ol class="activity-log" data-log aria-live="polite"></ol>
+        </section>
+      </aside>
+
+      <section class="interaction-pane" aria-label="Action input and inference output">
+        <section class="prompt-composer" data-prompt-composer aria-labelledby="prompt-heading">
+          <div class="composer-copy">
+            <span>INPUT</span>
+            <h2 id="prompt-heading">Describe an action</h2>
+          </div>
+          <label class="field prompt-field" for="action-prompt">
+            <span>Prompt</span>
+            <textarea id="action-prompt" rows="3" data-prompt>a person raises the right arm and waves</textarea>
+          </label>
+          <div class="composer-tools">
+            <div class="composer-options">
+              <div class="thinking-control">
+                <span><strong>Think before action</strong><small>Reasoning mode</small></span>
+                <button type="button" role="switch" aria-label="Think before action" aria-checked="true" data-thinking-toggle>
+                  <i aria-hidden="true"></i><span data-thinking-state>ON</span>
+                </button>
+              </div>
+            </div>
+            <div class="composer-actions">
+              <button class="generate-button" type="button" data-generate>
+                <span data-generate-label>Generate action</span><span aria-hidden="true">↗</span>
+              </button>
+              <button class="execute-button" type="button" data-sonic disabled>
+                <span>Run Sonic</span><span aria-hidden="true">↗</span>
+              </button>
+            </div>
+          </div>
+          <div class="prompt-library">
+            <label class="field"><span data-i18n="Templates">Templates</span><select data-templates></select></label>
+            <label class="field"><span data-i18n="Recent prompts">Recent prompts</span><select data-history></select></label>
+            <button class="quiet-button" type="button" data-clear-history data-i18n="Clear history">Clear history</button>
+            <small data-i18n="History stays in this browser. Only successful prompts are saved.">History stays in this browser. Only successful prompts are saved.</small>
+          </div>
+          <p class="service-hint" data-service-hint role="status"></p>
+          <small class="keyboard-hint">Ctrl + Enter to generate</small>
+        </section>
+
+        <section class="inference-output" data-inference-output aria-labelledby="output-heading">
+          <div class="output-heading">
+            <div><span>INFERENCE OUTPUT</span><h2 id="output-heading">Reasoning &amp; action</h2></div>
+          </div>
+          <div class="reasoning-block">
+            <div class="reasoning-label"><span>Reasoning</span><strong data-reasoning-state>Standby</strong></div>
+            <p data-reasoning>Reasoning text will appear after generation.</p>
+          </div>
+          <div class="output-stats">
+            <div><span>Frames</span><strong data-runtime-frames>—</strong></div>
+            <div><span>Duration</span><strong data-runtime-duration>—</strong></div>
+            <div><span>Action ID</span><strong data-action-identity>No action</strong></div>
+          </div>
+          <div class="result-downloads"><span data-selected-label></span><button class="quiet-button" type="button" data-download disabled data-i18n="Download result ZIP">Download result ZIP</button><small data-i18n="138D action · reasoning · generation settings">138D action · reasoning · generation settings</small></div>
+        </section>
+
+        <section class="visual-workspace" aria-label="Kinematic and dynamic action outputs">
+          <article class="visual-panel skeleton-panel" data-skeleton-panel>
+            <div class="visual-heading">
+              <div><span>KINEMATICS · MESH</span><h2>Human Action View</h2></div>
+              <button type="button" data-reset-view disabled>Reset view</button>
+            </div>
+            <div class="candidate-picker" data-candidate-picker hidden>
+              <button type="button" data-candidate-index="0" aria-pressed="true"><span>Candidate 1</span><small data-candidate-seed="0">—</small></button>
+              <button type="button" data-candidate-index="1" aria-pressed="false"><span>Candidate 2</span><small data-candidate-seed="1">—</small></button>
+            </div>
+            <div class="candidate-views">
+            <div class="preview-stage" data-preview-stage data-candidate-view="0">
+              <canvas data-preview-canvas aria-label="Interactive 22-joint human action mesh"></canvas>
+              <div class="preview-copy">
+                <span data-preview-caption>Waiting for generation</span>
+                <small data-preview-subtitle>Start the service and describe an action.</small>
+              </div>
+              <div class="viewport-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="preview-stage" data-second-stage data-candidate-view="1" hidden><canvas data-second-canvas aria-label="Candidate 2 human action mesh"></canvas><div class="preview-copy"><span data-i18n="Candidate 2">Candidate 2</span></div></div>
+            </div>
+            <div class="timeline">
+              <button type="button" aria-label="Play preview" data-play disabled>▶</button>
+              <input data-timeline type="range" min="0" max="0" value="0" step="1" />
+              <span data-frame-label>— / —</span>
+              <span class="timeline-rate">20 FPS</span>
+            </div>
+          </article>
+
+          <article class="visual-panel sonic-panel" data-sonic-panel>
+            <div class="visual-heading">
+              <div><span>DYNAMICS · MUJOCO</span><h2>G1 · Sonic MuJoCo</h2></div>
+              <span class="gate-state" data-sonic-job-state>Idle</span>
+            </div>
+            <div class="sonic-stage">
+              <video data-sonic-video controls playsinline preload="metadata" hidden></video>
+              <div class="sonic-placeholder" data-sonic-placeholder>
+                <div class="sim-mark" aria-hidden="true"><i></i><i></i><i></i></div>
+                <strong>MuJoCo dynamics preview</strong>
+                <small>Generate an action, then run Sonic for the selected candidate.</small>
+              </div>
+            </div>
+            <a class="video-download" data-video-download hidden download="sonic.mp4" data-i18n="Download Sonic video">Download Sonic video</a>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
