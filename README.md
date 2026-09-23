@@ -57,6 +57,10 @@ understood before it moved. Actions come out as a `(frames, 138)` unified human 
 representation at 20 FPS, which renders a character directly or drives a behavior foundation model
 on a robot.
 
+> [!NOTE]
+> Light-O1-Preview releases the text-to-action capability only. We are working towards the
+> full Light-O1, which will add vision and manipulation. Stay tuned — thanks for your interest!
+
 The tech blog compares Light-O1-Preview with two public text-to-action models, HY-Motion-1.0 and
 Kimodo. On HY-Motion-Bench, a VLM judge decomposes each prompt into a checklist and scores the
 generated action question by question.
